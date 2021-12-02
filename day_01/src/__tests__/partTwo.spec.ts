@@ -1,5 +1,6 @@
-// import { sum } from '../partTwo';
-//
-// test('sum', () => {
-//   expect(sum()).toBe(0);
-// });
+import mockDepths from "../mockDepths";
+import {reduceDepthsToWindowIncreaseCount} from "../partTwo";
+
+test('reduceDepthsToWindowIncreaseCount', () => {
+  expect(reduceDepthsToWindowIncreaseCount(mockDepths)).toBe(5)
+});

@@ -1,8 +1,8 @@
-import { partOneShout } from './partOne';
+import { partOneMain } from './partOne';
 import { partTwoShout } from './partTwo';
 
 function main() {
-  partOneShout();
+  partOneMain();
   partTwoShout();
 }
 
