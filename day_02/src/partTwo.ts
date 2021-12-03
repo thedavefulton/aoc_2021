@@ -43,9 +43,12 @@ export const partTwoShout = async () => {
   const sub = new Submarine();
 
   // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
   lines
     .map((line) => line.split(' '))
     .map(([a, b]) => [a, parseInt(b)])
+    // @ts-ignore
     .reduce((acc: Submarine, cur: Step) => {
       sub.processStep(cur);
       return sub;
