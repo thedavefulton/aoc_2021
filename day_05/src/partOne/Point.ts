@@ -1,23 +1,20 @@
 export class Point {
   private readonly _pointString: string;
-  private readonly _point: number[];
+  readonly x: number;
+  readonly y: number;
 
   constructor(pointString: string) {
     this._pointString = pointString;
-    this._point = this.parsePointString();
+    const { x, y } = this.parsePointString();
+    this.x = x;
+    this.y = y;
   }
 
   // expecting a point string 'a,b'
   // where (a: number, b: number) => [a: x, b: y]
-  parsePointString(): number[] {
-    return this._pointString.split(',').map((val) => parseInt(val));
-  }
+  parsePointString() {
+    const [x, y] = this._pointString.split(',').map((val) => parseInt(val));
 
-  get x(): number {
-    return this._point[0];
-  }
-
-  get y(): number {
-    return this._point[1];
+    return { x, y };
   }
 }
