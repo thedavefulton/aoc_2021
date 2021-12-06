@@ -24,3 +24,13 @@ export function shout(message: string | number) {
   }
   console.log(boxen(chalk.blue(message), { padding: 1, margin: 1 }));
 }
+
+export function range(start: number, end: number) {
+  const range = [];
+
+  for (let i = start; i <= end; i++) {
+    range.push(i);
+  }
+
+  return range;
+}
