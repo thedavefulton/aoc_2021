@@ -1,4 +1,4 @@
-import { readFile, shout } from './utils';
+import { shout } from '../utils';
 
 // export const sum = (...a: number[]) => a.reduce((acc, val) => acc + val, 0);
 
