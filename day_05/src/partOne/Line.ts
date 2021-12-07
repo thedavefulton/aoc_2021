@@ -2,44 +2,39 @@ import { Point } from './Point';
 import { range } from '../utils';
 
 export class Line {
-  // _lineString === 'x1,y1 -> x2,y2'
-  private _lineString: string;
-  readonly pointOne: Point;
-  readonly pointTwo: Point;
+  readonly x1: number;
+  readonly y1: number;
 
-  constructor(lineString: string) {
-    this._lineString = lineString;
+  readonly x2: number;
+  readonly y2: number;
 
-    const [pointOne, pointTwo] = this.parseLineString();
-    this.pointOne = pointOne;
-    this.pointTwo = pointTwo;
+  readonly isVertical: boolean;
+  readonly length: number;
+  readonly points: Point[];
+
+  constructor([x1, y1, x2, y2]: [number, number, number, number]) {
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+
+    this.isVertical = this.x1 === this.x2;
+    this.length = (this.isVertical ? this.y2 - this.y1 : this.x2 - this.x1) + 1;
+
+    this.points = this.generatePoints();
   }
 
-  private parseLineString(): Point[] {
-    return this._lineString.split(' -> ').map((pointString) => new Point(pointString));
+  private generatePoints() {
+    return this.isVertical
+      ? this.generateVerticalPoints()
+      : this.generateHorizontalPoints();
   }
 
-  private getHorizontalPoints(): { x: number; y: number }[] {
-    const y = this.pointOne.y;
-
-    return range(this.pointOne.x, this.pointTwo.x + 1).map((x) => ({ x, y }));
+  generateVerticalPoints() {
+    return range(this.y1, this.y2).map((yIndex) => new Point(this.x1, yIndex));
   }
 
-  private getVerticalPoints(): { x: number; y: number }[] {
-    const x = this.pointOne.x;
-
-    return range(this.pointOne.y, this.pointTwo.y + 1).map((y) => ({ x, y }));
-  }
-
-  get isVertical(): boolean {
-    return this.pointOne.x === this.pointTwo.x;
-  }
-
-  get isHorizontal(): boolean {
-    return this.pointOne.y === this.pointTwo.y;
-  }
-
-  get points() {
-    return this.isHorizontal ? this.getHorizontalPoints() : this.getVerticalPoints();
+  generateHorizontalPoints() {
+    return range(this.x1, this.x2).map((xIndex) => new Point(xIndex, this.y1));
   }
 }
