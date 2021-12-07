@@ -6,8 +6,8 @@ export class Point {
     this.x = x;
     this.y = y;
   }
-
-  get pointString(): string {
-    return `${this.x},${this.y}`;
-  }
 }
+
+Point.prototype.toString = function pointToString() {
+  return `${this.x},${this.y}`;
+};
