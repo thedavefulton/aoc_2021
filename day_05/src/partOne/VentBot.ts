@@ -2,18 +2,42 @@ import { Line } from './Line';
 
 export class VentBot {
   private _lineStrings: string[];
-  private _lines: Line[];
+  readonly lines: Line[];
 
   constructor(lines: string[]) {
     this._lineStrings = lines;
-    this._lines = this.parseLineStrings();
+    this.lines = this.generateLines();
   }
 
-  private parseLineStrings() {
-    return this._lineStrings.map((lineString) => new Line(lineString));
-  }
+  private generateLines() {
+    // @ts-ignore
+    return (
+      this._lineStrings
+        .map((lineString) => {
+          return lineString.split(' -> ').map((pointString) => {
+            return pointString.split(',').map((pt) => parseInt(pt));
+          });
+        })
+        .map(([a, b]) => [...a, ...b])
+        .filter(([x1, y1, x2, y2]) => x1 === x2 || y1 === y2)
+        .map(([x1, y1, x2, y2]) => {
+          let _x1 = x1,
+            _x2 = x2;
+          if (_x1 > _x2) {
+            _x1 = x2;
+            _x2 = x1;
+          }
+          let _y1 = y1,
+            _y2 = y2;
+          if (_y1 > _y2) {
+            _y1 = y2;
+            _y2 = y1;
+          }
 
-  get partOneLines() {
-    return this._lines.filter((line) => line.isVertical || line.isHorizontal);
+          return [_x1, _y1, _x2, _y2];
+        })
+        // @ts-ignore
+        .map((line) => new Line(...line))
+    );
   }
 }
