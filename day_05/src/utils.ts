@@ -28,7 +28,9 @@ export function shout(message: string | number) {
 export function range(start: number, end: number) {
   const range = [];
 
-  for (let i = start; i <= end; i++) {
+  const [_start, _end] = [start, end].sort();
+
+  for (let i = _start; i <= _end; i++) {
     range.push(i);
   }
 
