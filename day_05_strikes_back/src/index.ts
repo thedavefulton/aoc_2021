@@ -1,9 +1,9 @@
 import { partOneShout } from "./partOne";
 import { partTwoShout } from "./partTwo";
 
-function main() {
-  partOneShout();
-  partTwoShout();
+async function main() {
+  // await partOneShout();
+  await partTwoShout();
 }
 
 main();

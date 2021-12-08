@@ -49,7 +49,10 @@ export const partOneShout = async () => {
     .map(convertInputToArray)
     .filter(isVerticalOrHorizontal)
     .map(orderPoints)
-    .map(allLinePoints)
+    .map((arr) => {
+      console.log(arr);
+      return allLinePoints(arr);
+    })
     .reduce((acc, cur) => {
       acc = [...acc, ...cur];
 
