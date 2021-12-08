@@ -1,5 +1,5 @@
-import { sum } from "./index";
+import { calculateFuel } from "./index";
 
-test("sum", () => {
-  expect(sum()).toBe(0);
+test("calculateFuel", () => {
+  expect(calculateFuel(16, 5)).toBe(66);
 });

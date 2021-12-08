@@ -1,8 +1,8 @@
 import { calculateFuel, calculateOption, findEnds } from "./index";
-import { loadCrabs } from "../index";
+import { loadTestCrabs } from "../utils";
 
 test("findEnds", async () => {
-  const crabs = await loadCrabs();
+  const crabs = await loadTestCrabs();
   expect(findEnds(crabs)).toStrictEqual([0, 16]);
 });
 
@@ -12,6 +12,6 @@ test("calculateFuel", () => {
 });
 
 test("calculateOption", async () => {
-  const crabs = await loadCrabs();
+  const crabs = await loadTestCrabs();
   expect(calculateOption(crabs, 2)).toBe(37);
 });

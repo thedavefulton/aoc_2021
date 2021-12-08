@@ -71,3 +71,18 @@ export function shout(message: string | number) {
   }
   console.log(boxen(chalk.blue(message), { padding: 1, margin: 1 }));
 }
+
+export async function loadCrabs(loadTestCrabs = false) {
+  let lines: string[];
+  if (loadTestCrabs) {
+    lines = await readTestFile();
+  } else {
+    lines = await readFile();
+  }
+
+  return lines[0].split(",").map((crab) => parseInt(crab));
+}
+
+export async function loadTestCrabs() {
+  return await loadCrabs(true);
+}
