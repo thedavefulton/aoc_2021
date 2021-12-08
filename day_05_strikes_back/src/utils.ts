@@ -20,7 +20,7 @@ export const readFile = async (fileName = "./files/input.txt") => {
 export const readTestFile = async () => await readFile("./files/test.txt");
 
 export function range(start: number, end: number) {
-  const range = [];
+  const range: number[] = [];
   let _start = start,
     _end = end,
     reversed = false;
@@ -35,7 +35,7 @@ export function range(start: number, end: number) {
     range.push(i);
   }
 
-  return reversed ? _reverse(range) : range;
+  return reversed ? (_reverse(range) as number[]) : range;
 }
 
 export function shout(message: string | number) {
