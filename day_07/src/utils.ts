@@ -57,6 +57,14 @@ export function zip<T, U>(arr1: T[], arr2: U[]): [T, U][] {
   return arr1.map((t, idx) => [t, arr2[idx]]);
 }
 
+export function min(arr: number[]) {
+  return arr.reduce((acc, cur) => (cur < acc ? cur : acc));
+}
+
+export function max(arr: number[]) {
+  return arr.reduce((acc, cur) => (cur > acc ? cur : acc));
+}
+
 export function shout(message: string | number) {
   if (typeof message === "number") {
     message = message.toString();

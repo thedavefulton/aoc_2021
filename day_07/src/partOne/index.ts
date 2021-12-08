@@ -1,9 +1,25 @@
-import { readFile, shout } from "../utils";
+import { max, min, range, shout } from "../utils";
 
-export const sum = (...a: number[]) => a.reduce((acc, val) => acc + val, 0);
+export function findEnds(crabs: number[]) {
+  return [min(crabs), max(crabs)];
+}
 
-export const partOneShout = async () => {
-  // const lines = await readFile();
+export function calculateFuel(crab: number, target: number) {
+  return crab <= target ? target - crab : crab - target;
+}
 
-  shout("Hello from Part One!");
+export function calculateOption(crabs: number[], option: number) {
+  return crabs
+    .map((crab) => calculateFuel(crab, option))
+    .reduce((acc, cur) => acc + cur);
+}
+
+export const partOneShout = (crabs: number[]) => {
+  const [start, end] = findEnds(crabs);
+  const options = range(start, end);
+  const lowestCost = options
+    .map((option) => calculateOption(crabs, option))
+    .reduce((acc, cur) => min([acc, cur]));
+
+  shout(lowestCost);
 };
