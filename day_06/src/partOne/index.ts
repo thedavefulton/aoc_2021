@@ -1,9 +1,14 @@
-import { readFile, shout } from "../utils";
+import { readFile, readTestFile, shout } from "../utils";
+import { School } from "./School";
 
-export const sum = (...a: number[]) => a.reduce((acc, val) => acc + val, 0);
+export function ageFish(fish: number) {
+  return fish > 0 ? fish - 1 : 6;
+}
 
 export const partOneShout = async () => {
-  // const lines = await readFile();
+  const [input] = await readFile();
+  const fish = input.split(",").map((fish) => parseInt(fish));
+  const school = new School(fish, 80);
 
-  shout("Hello from Part One!");
+  shout(school.fish.length);
 };
