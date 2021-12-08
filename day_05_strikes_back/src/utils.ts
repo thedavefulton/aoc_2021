@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
 const boxen = require("boxen");
+import _reverse from "lodash/reverse";
 
 export const readFile = async (fileName = "./files/input.txt") => {
   const lines: string[] = [];
@@ -20,12 +21,21 @@ export const readTestFile = async () => await readFile("./files/test.txt");
 
 export function range(start: number, end: number) {
   const range = [];
+  let _start = start,
+    _end = end,
+    reversed = false;
 
-  for (let i = start; i <= end; i++) {
+  if (_start > _end) {
+    reversed = true;
+    _start = end;
+    _end = start;
+  }
+
+  for (let i = _start; i <= _end; i++) {
     range.push(i);
   }
 
-  return range;
+  return reversed ? _reverse(range) : range;
 }
 
 export function shout(message: string | number) {
