@@ -1,10 +1,11 @@
 const fs = require('fs');
+// @ts-ignore
 import fetch from 'node-fetch';
 // *********** UTILS ***********
 // https://adventofcode.com/2021/day/5
 
 function fetchPastebinData(url: string) {
-  return fetch(url).then((response) => response.text());
+  return fetch(url).then((response: any) => response.text());
 }
 
 function addCoordinateUniversal(
@@ -91,7 +92,7 @@ function calculate_a(data: number[][]) {
 async function loadData() {
   const rawData = await fetchPastebinData('https://pastebin.com/raw/YQ2XMtB6');
 
-  return rawData.split(new RegExp('\r\n|\r|\n', 'g')).map((s) => {
+  return rawData.split(new RegExp('\r\n|\r|\n', 'g')).map((s: any) => {
     const [l, r] = s.split('->');
     const [x1, y1] = l.split(',');
     const [x2, y2] = r.split(',');
