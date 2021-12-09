@@ -18,6 +18,18 @@ export const readFile = async (fileName = "./files/input.txt") => {
 
 export const readTestFile = async () => await readFile("./files/test.txt");
 
+export const loadEntries = async (useTestEntries = false) => {
+  let lines: string[];
+
+  if (useTestEntries) {
+    lines = await readTestFile();
+  } else {
+    lines = await readFile();
+  }
+
+  return lines.map((line) => line.split(" | "));
+};
+
 export function shout(message: string | number) {
   if (typeof message === "number") {
     message = message.toString();
