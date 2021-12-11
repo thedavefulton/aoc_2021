@@ -1,8 +1,20 @@
 import { shout } from "../utils";
+import { Display } from "./Display";
 
-export const sum = (...a: number[]) => a.reduce((acc, val) => acc + val, 0);
+export const partTwoShout = (entries: string[][][]) => {
+  console.log(entries);
+  const parsedEntries = entries
+    .map((entry) => {
+      const parsedParts = entry.map((part) => {
+        console.log(part.join(" "));
+        return part.join(" ");
+      });
+      return parsedParts;
+    })
+    .map((parts) => {
+      console.log(parts);
+      return parts;
+    });
 
-export const partTwoShout = async (input = [] as string[]) => {
-  shout("Hello from Part Two!");
-  // shout(input.toString());
+  // console.log(parsedEntries);
 };

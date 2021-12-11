@@ -27,7 +27,9 @@ export const loadEntries = async (useTestEntries = false) => {
     lines = await readFile();
   }
 
-  return lines.map((line) => line.split(" | "));
+  return lines.map((line) => {
+    return line.split(" | ").map((part) => part.split(" "));
+  });
 };
 
 export function shout(message: string | number) {
