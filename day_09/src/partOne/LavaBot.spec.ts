@@ -6,6 +6,25 @@ const initBot = async () => {
   return new LavaBot(lines);
 };
 
+// test.skip("mapBasin", async () => {
+//   const bot = await initBot();
+//   expect(bot.mapBasin([0, 0])).toEqual([
+//     [0, 0],
+//     [1, 0],
+//     [0, 1],
+//   ]);
+// });
+
+// test("crawlPoint", async () => {
+//   const bot = await initBot();
+//   expect(bot.crawlPoint([0, 0])).toStrictEqual([
+//     [1, 0],
+//     [0, 1],
+//   ]);
+//   expect(bot.crawlPoint([0, 1])).toStrictEqual([[0, 0]]);
+//   expect(bot.crawlPoint([1, 0])).toStrictEqual([[0, 0]]);
+// });
+
 test("riskLevel", async () => {
   const bot = await initBot();
   expect(bot.riskLevel).toBe(15);
