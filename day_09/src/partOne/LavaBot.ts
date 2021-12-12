@@ -6,7 +6,7 @@ export class LavaBot {
   lines: string[];
   length: number;
   height: number;
-  lowPoints: number[];
+  lowPoints: number[][];
 
   constructor(lines: string[]) {
     this.lines = lines;
@@ -23,7 +23,7 @@ export class LavaBot {
     this.lines.map((line, lineIndex) => {
       line.split("").map((char, charIndex) => {
         if (this.isLowPoint(lineIndex, charIndex))
-          this.lowPoints.push(parseInt(this.lines[lineIndex][charIndex]));
+          this.lowPoints.push([lineIndex, charIndex]);
       });
     });
   }
@@ -64,8 +64,8 @@ export class LavaBot {
   }
 
   get riskLevel() {
-    return this.lowPoints.reduce((acc, cur) => {
-      const risk = cur + 1;
+    return this.lowPoints.reduce((acc, [lineIndex, charIndex]) => {
+      const risk = parseInt(this.lines[lineIndex][charIndex]) + 1;
       return acc + risk;
     }, 0);
   }
