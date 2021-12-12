@@ -2,25 +2,46 @@ import { loadEntries } from "../utils";
 import { Display } from "./Display";
 
 const entry = [
-  "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab",
-  "cdfeb fcadb cdfeb cdbaf",
+  [
+    "acedgfb",
+    "cdfbe",
+    "gcdfa",
+    "fbcad",
+    "dab",
+    "cefabd",
+    "cdfgeb",
+    "eafb",
+    "cagedb",
+    "ab",
+  ],
+  ["cdfeb", "fcadb", "cdfeb", "cdbaf"],
 ];
 
-test("stepOne", () => {
+test("orderNumberString", () => {
+  const display = new Display(entry);
+  expect(display.inputs[0]).toBe("abcdefg");
+});
+
+test("getOverlap", () => {
+  const display = new Display(entry);
+  expect(display.getOverlap("abcd", "bcde")).toBe(3);
+});
+
+test.skip("stepOne", () => {
   const display = new Display(entry);
 
-  expect(display.digits._1).toBe("ab");
-  expect(display.digits._4).toBe("abef");
-  expect(display.digits._7).toBe("abd");
-  expect(display.digits._8).toBe("abcdefg");
-
-  expect(display.digits._0).toBe("abcdeg");
-
-  expect(display.digits._5).toBe("bcdef");
-  expect(display.digits._2).toBe("acdfg");
-  expect(display.digits._3).toBe("abcdf");
-  expect(display.digits._6).toBe("bcdefg");
-  expect(display.digits._9).toBe("abcdef");
+  // expect(display.digits[1]).toBe("ab");
+  // expect(display.digits[4]).toBe("abef");
+  // expect(display.digits[7]).toBe("abd");
+  // expect(display.digits[8]).toBe("abcdefg");
+  //
+  // expect(display.digits[0]).toBe("abcdeg");
+  //
+  // expect(display.digits[5]).toBe("bcdef");
+  // expect(display.digits[2]).toBe("acdfg");
+  // expect(display.digits[3]).toBe("abcdf");
+  // expect(display.digits[6]).toBe("bcdefg");
+  // expect(display.digits[9]).toBe("abcdef");
 
   // expect(display.decodeOutput("cdfeb")).toBe("5");
   // expect(display.decodeOutput("fcadb")).toBe("3");

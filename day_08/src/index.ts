@@ -21,7 +21,8 @@ export const _8: Segment[] = ["a", "b", "c", "d", "e", "f", "g"]; //7
 export const uniqueDigits = [_1, _4, _7, _8];
 
 async function main() {
-  const entries = await loadEntries(true);
+  // const entries = await loadEntries(true);
+  const entries = await loadEntries();
   // console.log(entries);
 
   // await partOneShout(entries);

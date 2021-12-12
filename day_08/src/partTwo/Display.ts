@@ -1,56 +1,48 @@
 const chalk = require("chalk");
-import { Segment } from "../index";
+interface NumberStringMap {
+  _0: string;
+  _1: string;
+  _2: string;
+  _3: string;
+  _4: string;
+  _5: string;
+  _6: string;
+  _7: string;
+  _8: string;
+  _9: string;
+}
 
-type SegmentMap = { [key in Segment]: Segment | null };
+interface SegmentLetterMap {
+  a: string;
+  b: string;
+  c: string;
+  d: string;
+  e: string;
+  f: string;
+  g: string;
+}
+
+interface InputLengthMap {
+  _2: string;
+  _3: string;
+  _4: string;
+  _5: string[];
+  _6: string[];
+  _7: string;
+}
 
 export class Display {
   inputs: string[];
   outputs: string[];
-  digits: { [key: string]: string };
-  segments: SegmentMap;
-  numberStringList: string[];
+  segmentLetterMap: SegmentLetterMap;
+  numberStringMap: NumberStringMap;
+  inputLengthMap!: InputLengthMap;
 
-  twoOrFive!: string[];
-  sixOrNine!: string[];
-
-  constructor([inputs, outputs]: string[]) {
-    this.inputs = inputs
-      .split(" ")
-      .map((input) => [...input.split("")].sort().join(" "));
-    this.outputs = outputs
-      .split(" ")
-      .map((output) => [...output.split("")].sort().join(" "));
-    this.digits = this.initDigits();
-    this.segments = this.initSegments();
-    this.numberStringList = this.initNumberStringList();
-
-    this.decodeInputs();
-    this.decodeOutputs();
-    // console.log(chalk.bgGreen("inputs"));
-    // console.log(chalk.green(this.inputs));
-    // console.log(chalk.bgRed("outputs"));
-    // console.log(chalk.red(this.outputs));
-    // console.log(chalk.bgYellow("segments"));
-    // console.log(chalk.yellow(Object.entries(this.segments)));
-  }
-
-  decodeOutputs() {
-    const outputNumbers = this.outputs.map((output) =>
-      this.decodeOutput(output)
-    );
-    // console.log(chalk.red(outputNumbers));
-  }
-
-  decodeOutput(output: string): string {
-    const _output = [...output.split("")].sort().join("");
-    // @ts-ignore
-    return Object.entries(this.digits).find(
-      ([, value]) => _output === value
-    )[0][1] as string;
-  }
-
-  initDigits() {
-    return {
+  constructor([inputs, outputs]: string[][]) {
+    this.inputs = inputs.map(this.orderNumberString);
+    this.outputs = outputs.map(this.orderNumberString);
+    this.segmentLetterMap = { a: "", b: "", c: "", d: "", e: "", f: "", g: "" };
+    this.numberStringMap = {
       _0: "",
       _1: "",
       _2: "",
@@ -62,215 +54,217 @@ export class Display {
       _8: "",
       _9: "",
     };
+    this.setInputLengthMap();
+    this.setUniqueNumbers();
+
+    this.printKeyValue("inputs: ", this.inputs);
+    this.printKeyValue("outputs: ", this.outputs);
+
+    this.printCurrentStatus();
+
+    this.decodeInputs();
   }
 
-  initSegments(): SegmentMap {
-    return {
-      a: null,
-      b: null,
-      c: null,
-      d: null,
-      e: null,
-      f: null,
-      g: null,
-    };
+  setUniqueNumbers() {
+    this.numberStringMap._1 = this.inputLengthMap._2;
+    this.numberStringMap._4 = this.inputLengthMap._4;
+    this.numberStringMap._7 = this.inputLengthMap._3;
+    this.numberStringMap._8 = this.inputLengthMap._7;
   }
 
-  initNumberStringList() {
-    return ["", "", "", "", "", "", "", "", "", ""];
+  setInputLengthMap() {
+    this.inputLengthMap = this.inputs.reduce(
+      (acc, cur) => {
+        if (cur.length === 2) {
+          acc._2 = cur;
+        } else if (cur.length === 3) {
+          acc._3 = cur;
+        } else if (cur.length === 4) {
+          acc._4 = cur;
+        } else if (cur.length === 5) {
+          acc._5.push(cur);
+        } else if (cur.length === 6) {
+          acc._6.push(cur);
+        } else {
+          acc._7 = cur;
+        }
+
+        return acc;
+      },
+      { _2: "", _3: "", _4: "", _5: [], _6: [], _7: "" } as InputLengthMap
+    );
+  }
+
+  get output() {
+    return this.outputs
+      .map((output) => this.decodeOutput(output))
+      .map((output) => output[0])
+      .map((output) => output.split("_").join(""))
+      .join("");
+  }
+
+  decodeOutput(output: string) {
+    return Object.entries(this.numberStringMap).filter(
+      (entry) => entry[1] === output
+    )[0];
   }
 
   decodeInputs() {
-    this.setUniqueDigits();
-    this.phaseOne();
-    this.phaseTwo();
-    this.orderDigits();
-  }
-
-  orderDigits() {
-    this.digits = Object.entries(this.digits)
-      .map(([key, value]) => [key, value.split("").sort().join("")])
-      .reduce((acc, cur) => {
-        // @ts-ignore
-        acc[cur[0]] = cur[1];
-        return acc;
-      }, {});
-  }
-
-  overlapCount(a: string, b: string) {
-    return a.split("").reduce((acc, cur) => {
-      if (b.includes(cur)) acc += 1;
-
-      return acc;
-    }, 0);
-  }
-
-  getInputOfLength(length: number) {
-    return this.inputs.find((input) => input.length === length) as string;
-  }
-
-  setUniqueDigits() {
-    this.digits._1 = this.getInputOfLength(2);
-    this.digits._4 = this.getInputOfLength(4);
-    this.digits._7 = this.getInputOfLength(3);
-    this.digits._8 = this.getInputOfLength(7);
-  }
-
-  // 1 & 7 are unique and comparing them
-  // gives us segment "a"
-  stepOne() {
-    this.segments.a = this.digits._7
-      .split("")
-      .filter((char) => !this.digits._1.includes(char))[0] as Segment;
-  }
-
-  // 2 & 5 can be used to determine
-  // what 3 is
-  stepTwo() {
-    this.setTwoOrFive();
-    this.setThree();
-  }
-
-  // 6 & 9 can be used to determine
-  // what 0 is
-  stepThree() {
-    this.setSixOrNine();
-    this.setZero();
-  }
-
-  // 0 & 3 can be used to determine
-  // what "d" is, which can itself
-  // be used to determine "g"
-  stepFour() {
+    this.setA();
+    this.set3();
+    this.setB();
     this.setD();
     this.setG();
-  }
-
-  // We now have ["a", "d", "g"]
-  // and [0, 1, 3, 4, 7, 8]
-  phaseOne() {
-    this.stepOne();
-    this.stepTwo();
-    this.stepThree();
-    this.stepFour();
-  }
-
-  // Filtering 1 & "d" from 4 can
-  // determine "b"
-  stepFive() {
-    this.setB();
-  }
-
-  // Using "a", "b", "d", "g" we can determine
-  // 5 & 2, which can be used to determine
-  // "f"
-  stepSix() {
-    const [x, y] = this.twoOrFive;
-    const { a, b, d, g } = this.segments;
-
-    this.digits._5 = this.overlapCount(x, [a, b, d, g].join("")) === 4 ? x : y;
-    this.digits._2 = this.digits._5 === x ? y : x;
-
-    this.segments.f = this.digits._5
-      .split("")
-      .find((char) => ![a, b, d, g].includes(char as Segment)) as Segment;
-  }
-  // We now have ["a", "b", "d", "f", "g"]
-  // and [0, 1, 2, 3, 4, 5, 7, 8]
-
-  // Using ["b", "d", "f"] & 4 we can determine
-  // what "c" is
-  stepSeven() {
+    this.set5andF();
+    this.set2();
     this.setC();
     this.setE();
-    this.setSixAndNine();
+    this.set0and6and9();
   }
 
-  phaseTwo() {
-    this.stepFive();
-    this.stepSix();
-    this.stepSeven();
-  }
+  set0and6and9() {
+    const { a, b, c, d, e, f, g } = this.segmentLetterMap;
+    const lengthSixes = this.inputLengthMap._6;
 
-  setC() {
-    const { b, d, f } = this.segments;
-    this.segments.c = this.digits._4
-      .split("")
-      .find((char) => ![b, d, f].includes(char as Segment)) as Segment;
-  }
+    const zeroTestString = [a, b, c, e, f, g].sort().join("");
+    const sixTestString = [a, b, d, e, f, g].sort().join("");
+    const nineTestString = [a, b, c, d, f, g].sort().join("");
+    this.numberStringMap._0 = lengthSixes.filter(
+      (option) => option === zeroTestString
+    )[0];
+    this.numberStringMap._6 = lengthSixes.filter(
+      (option) => option === sixTestString
+    )[0];
+    this.numberStringMap._9 = lengthSixes.filter(
+      (option) => option === nineTestString
+    )[0];
 
+    this.printCurrentStatus();
+  }
+  //
   setE() {
-    const { a, b, c, d, f, g } = this.segments;
-    this.segments.e = this.digits._8
+    const { _8 } = this.numberStringMap;
+    const { a, b, c, d, f, g } = this.segmentLetterMap;
+    this.segmentLetterMap.e = _8
       .split("")
-      .find((char) => ![a, b, c, d, f, g].includes(char as Segment)) as Segment;
-  }
-  // We now have ["a", "b", "c", "d", "e", "f", "g"]
-  // and [0, 1, 2, 3, 4, 5, 7, 8]
+      .filter((char) => ![a, b, c, d, f, g].includes(char))[0];
 
-  // Finally, set 6 & 9
-  setSixAndNine() {
-    const [x, y] = this.sixOrNine;
-    const { a, b, d, e, f, g } = this.segments;
-    const sixString = [a, b, d, e, f, g].join("");
-    this.digits._6 = x === sixString ? x : y;
-    this.digits._9 = x === this.digits._6 ? y : x;
+    this.printCurrentStatus();
   }
-  // 2 & 5 and 6 & 9 can be determined by
-  // filtering out 3 & 0, respectively
-  findOverlappingTwoOfThreeOfLength(length: number, overlap: number) {
-    const [a, b, c] = this.inputs.filter((input) => input.length === length);
-    return this.overlapCount(a, b) === overlap
-      ? [a, b]
-      : this.overlapCount(b, c) === overlap
-      ? [b, c]
-      : [c, a];
-  }
-
-  findOneNotLikeTheOthers(length: number, others: string[]) {
-    return this.inputs
-      .filter((input) => input.length === length)
-      .find((option) => !others.includes(option));
-  }
-
-  setTwoOrFive() {
-    this.twoOrFive = this.findOverlappingTwoOfThreeOfLength(5, 3);
-  }
-
-  setThree() {
-    this.digits._3 = this.findOneNotLikeTheOthers(5, this.twoOrFive) as string;
-  }
-
-  setSixOrNine() {
-    this.sixOrNine = this.findOverlappingTwoOfThreeOfLength(6, 5);
-  }
-
-  setZero() {
-    this.digits._0 = this.findOneNotLikeTheOthers(6, this.sixOrNine) as string;
-  }
-
-  setD() {
-    const { _0, _3 } = this.digits;
-    this.segments.d = _3
+  //
+  setC() {
+    const { _1 } = this.numberStringMap;
+    const { a, b, d, f, g } = this.segmentLetterMap;
+    this.segmentLetterMap.c = _1
       .split("")
-      .find((char) => !_0.includes(char)) as Segment;
-  }
+      .filter((char) => ![a, b, d, f, g].includes(char))[0];
 
+    this.printCurrentStatus();
+  }
+  //
+  set2() {
+    const { _3, _5 } = this.numberStringMap;
+    const [x, y, z] = this.inputLengthMap._5;
+
+    this.numberStringMap._2 = [x, y, z].filter(
+      (option) => option !== _3 && option !== _5
+    )[0];
+
+    this.printCurrentStatus();
+  }
+  //
+  set5andF() {
+    const { a, b, d, g } = this.segmentLetterMap;
+    const testString = [a, b, d, g].join("");
+    const [x, y, z] = this.inputLengthMap._5;
+    this.numberStringMap._5 =
+      this.getOverlap(x, testString) === 4
+        ? x
+        : this.getOverlap(y, testString) === 4
+        ? y
+        : z;
+
+    this.segmentLetterMap.f = this.numberStringMap._5
+      .split("")
+      .filter((char) => !testString.includes(char))[0];
+    this.printCurrentStatus();
+  }
+  //
   setG() {
-    const [x, y, z] = this.inputs.filter((input) => input.length === 5);
-    const { a, d } = this.segments;
-
-    this.segments.g = x
+    const { _1, _3 } = this.numberStringMap;
+    const { a, d } = this.segmentLetterMap;
+    this.segmentLetterMap.g = _3
       .split("")
-      .filter((char) => y.includes(char) && z.includes(char))
-      .filter((char) => char !== a && char && d)[0] as Segment;
+      .filter((char) => ![a, d, ..._1.split("")].includes(char))[0];
+
+    this.printCurrentStatus();
+  }
+  //
+  setD() {
+    const { _1, _4 } = this.numberStringMap;
+    const { b } = this.segmentLetterMap;
+    this.segmentLetterMap.d = _4
+      .split("")
+      .filter((char) => ![b, ..._1.split("")].includes(char))[0];
+
+    this.printCurrentStatus();
+  }
+  //
+  setB() {
+    const { _3, _4 } = this.numberStringMap;
+    this.segmentLetterMap.b = _4
+      .split("")
+      .filter((char) => !_3.includes(char))[0];
+
+    this.printCurrentStatus();
+  }
+  //
+  set3() {
+    const [x, y, z] = this.inputLengthMap._5;
+    this.numberStringMap._3 =
+      this.getOverlap(x, y) === 3 ? z : this.getOverlap(y, z) === 3 ? x : y;
+
+    this.printCurrentStatus();
+  }
+  //
+  setA() {
+    const { _1, _7 } = this.numberStringMap;
+
+    this.segmentLetterMap.a = _7
+      .split("")
+      .filter((char) => !_1.includes(char))[0];
+
+    this.printCurrentStatus();
   }
 
-  setB() {
-    const { d } = this.segments;
-    const { _1, _4 } = this.digits;
-    this.segments.b = _4
-      .split("")
-      .find((char) => ![d, ..._1.split("")].includes(char)) as Segment;
+  orderNumberString(numberString: string) {
+    return [...numberString.split("")].sort().join("");
+  }
+
+  printCurrentStatus() {
+    this.printNumberStringList();
+    this.printSegmentLetterList();
+  }
+
+  printSegmentLetterList() {
+    this.printKeyValue(
+      "segmentLetterList: ",
+      Object.entries(this.segmentLetterMap)
+    );
+  }
+
+  printNumberStringList() {
+    this.printKeyValue(
+      "numberStringList: ",
+      Object.entries(this.numberStringMap)
+    );
+  }
+
+  printKeyValue(key: any, value: any) {
+    console.log(chalk.red(key), chalk.bgRed(value));
+  }
+
+  getOverlap(a: string, b: string) {
+    return a.split("").filter((char) => b.includes(char)).length;
   }
 }
