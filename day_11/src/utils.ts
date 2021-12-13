@@ -22,7 +22,7 @@ export function shout(message: string | number) {
   if (typeof message === "number") {
     message = message.toString();
   }
-  console.log(boxen(chalk.blue(message), { padding: 1, margin: 1 }));
+  // console.log(boxen(chalk.blue(message), { padding: 1, margin: 1 }));
 }
 
 export function reverse<T>(arr: T[]): T[] {

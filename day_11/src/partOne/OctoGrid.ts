@@ -8,17 +8,31 @@ export class OctoGrid {
   constructor(lines: string[]) {
     this.flashes = 0;
     this.octos = this.mapLinesToOctos(lines);
-    const iterations = 100;
-    for (let i = 0; i < iterations; i++) {
-      this.incrementGrid();
-    }
+    console.log(this.findSyncStep());
 
-    console.log(
-      this.octos.map((row) => {
-        return row.map((octo) => octo.energy);
-      }),
-      this.flashes
-    );
+    // console.log(
+    //   this.octos.map((row) => {
+    //     return row.map((octo) => octo.energy);
+    //   }),
+    //   this.flashes
+    // );
+  }
+
+  findSyncStep() {
+    const totalOctos = this.height * this.length;
+    let steps = 0;
+    let syncedOctos = 0;
+    do {
+      steps += 1;
+      this.resetOctos();
+      this.incrementGrid();
+      syncedOctos = this.octos
+        .reduce((acc, cur) => [...acc, ...cur], [])
+        .filter((octo) => octo.flashed).length;
+    } while (totalOctos !== syncedOctos);
+
+    // console.log(this.octos.toString());
+    return steps;
   }
 
   incrementGrid() {
@@ -28,7 +42,7 @@ export class OctoGrid {
         return octo;
       });
     });
-    this.resetOctos();
+    // this.resetOctos();
   }
 
   resetOctos() {
@@ -96,3 +110,11 @@ export class OctoGrid {
     return this.octos.length;
   }
 }
+
+OctoGrid.prototype.toString = function () {
+  return this.octos
+    .map((row) => {
+      return row.map((octo) => octo.energy).join(" ");
+    })
+    .toString();
+};
